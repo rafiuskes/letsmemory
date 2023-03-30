@@ -1,3 +1,4 @@
+let pontuacao = 0;
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -17,22 +18,23 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 95%;
+            width: 100%;
             max-width: 1200px;
             transform: translate(-50%, -50%);
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
+            justify-content: flex-start;
+            gap: 5px;
         }
         .card {
-            width: 100px;
-            height: 140px;
+            width: 12.5%;
+            height: 100px;
             background-color: #ccc;
             border-radius: 5px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 36px;
+            font-size: 24px;
             font-weight: bold;
             cursor: pointer;
             user-select: none;
