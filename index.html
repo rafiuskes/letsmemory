@@ -23,8 +23,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-}
-
+        }
         .card {
             width: 100px;
             height: 140px;
@@ -69,35 +68,33 @@
             font-size: 24px;
             color: green;
             display: none;
-}
-    .tela-selecao {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-    .tela-selecao button {
-    margin: 5px;
-    font-size: 24px;
-    padding: 10px 20px;
-    cursor: pointer;
-}
-
+        }
+        .tela-selecao {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .tela-selecao button {
+            margin: 5px;
+            font-size: 24px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <!-- Adicione o código da tela de seleção aqui -->
     <div id="tela-selecao" class="tela-selecao">
-    <h1>Escolha o que deseja aprender</h1>
-    <button id="btnNumeros">Números</button>
-    <button id="btnNome">Nome (Leticia)</button>
-    <button id="btnVogais">Vogais</button>
-    <button id="btnAlfabeto">Alfabeto</button>
-    </div>
+        <h1>Escolha o que deseja aprender</h1>
+        <button id="btnNumeros">Números</button>
+        <button id="btnNome">Nome</button>
+        <button id="btnVogais">Vogais</button>
+        <button id="btnAlfabeto">Alfabeto</button>
+      </div>
 
     <div class="info">
         <span id="tentativas">Tentativas: 0</span>
@@ -106,140 +103,134 @@
     <div class="message" id="message">Você encontrou um par!</div>
 
     <div class="game-board" id="game-board"></div>
-    <script>
-        const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const gameBoard = document.getElementById("game-board");
-        const cartas = [...letras, ...letras];
-        let tentativas = 0;
-        let carta1 = null;
-        let carta2 = null;
+<script>
+    const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const conteudo = {
+                    numeros: "1234567890",
+                    nome: "LETICIA",
+                    vogais: "AEIOU",
+                    alfabeto: letras
+                    };
+    const gameBoard = document.getElementById("game-board");
+    const cartas = [...letras, ...letras];
+    let tentativas = 0;
+    let carta1 = null;
+    let carta2 = null;
 
-        function embaralhar(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
+    function embaralhar(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
         }
+        return array;
+    }
 
-        function virarCarta(carta) {
-            if (carta1 === null) {
-                carta1 = carta;
-                carta.classList.add("virada");
-            } else if (carta2 === null && carta !== carta1) {
-                carta2 = carta;
-                carta.classList.add("virada");
+    function virarCarta(carta) {
+        if (carta1 === null) {
+            carta1 = carta;
+            carta.classList.add("virada");
+        } else if (carta2 === null && carta !== carta1) {
+            carta2 = carta;
+            carta.classList.add("virada");
 
-                setTimeout(() => {
-                    if (carta1.textContent === carta2.textContent) {
-                        console.log("Parabéns! Você acertou!");
-                        showMessage();
-                        carta1 = carta2 = null;
-                    } else {
-                        console.log("Ops, as cartas são diferentes.");
-                        carta1.classList.remove("virada");
-                        carta2.classList.remove("virada");
-                        carta1 = carta2 = null;
-}
-
-                }, 1000);
-            }
+            setTimeout(() => {
+                if (carta1.textContent === carta2.textContent) {
+                    console.log("Parabéns! Você acertou!");
+                    showMessage();
+                    carta1 = carta2 = null;
+                } else {
+                    console.log("Ops, as cartas são diferentes.");
+                    carta1.classList.remove("virada");
+                    carta2.classList.remove("virada");
+                    carta1 = carta2 = null;
+                }
+            }, 1000);
         }
+        tentativas++;
+        infoTentativas.textContent = `Tentativas: ${tentativas}`;
+    }
 
-        function criarCarta(letra) {
-            const carta = document.createElement("div");
-            const img = document.createElement("img");
-            carta.className = "card";
-            img.src = "carta_virada.jpg";
-            carta.textContent = letra;
-            carta.appendChild(img);
-            carta.addEventListener("click", () => virarCarta(carta));
-            return carta;
-        }
+    function criarCarta(conteudoCarta) {
+        const carta = document.createElement("div");
+        const img = document.createElement("img");
+        carta.className = "card";
+        img.src = "carta_virada.jpg";
+        carta.textContent = conteudoCarta;
+        carta.appendChild(img);
+        carta.addEventListener("click", () => virarCarta(carta));
+        return carta;
+    }
 
-        function iniciarJogo() {
-            const cartasEmbaralhadas = embaralhar(cartas);
-            for (const carta of cartasEmbaralhadas) {
-                gameBoard.appendChild(criarCarta(carta));
-                iniciarTimer();
-            }
-        }
-        const infoTentativas = document.getElementById("tentativas");
-const infoTempo = document.getElementById("tempo");
-let tempo = 0;
-let timer;
+    function iniciarJogoComConteudo(nomeConteudo) {
+      const cartasEmbaralhadas = embaralhar([...nomeConteudo, ...nomeConteudo]);
+      cartas.length = 0;
+      for (const carta of cartasEmbaralhadas) {
+        cartas.push(carta);
+      }
+      gameBoard.innerHTML = '';
+      tentativas = 0;
+      tempo = 0;
+      carta1 = null;
+      carta2 = null;
+      infoTentativas.textContent = `Tentativas: ${tentativas}`;
+      infoTempo.textContent = `Tempo: ${tempo}s`;
+      pararTimer();
+      clearInterval(timer);
+      iniciarTimer();
+      for (const carta of cartasEmbaralhadas) {
+        gameBoard.appendChild(criarCarta(carta));
+      }
+    }
 
-function iniciarTimer() {
-    timer = setInterval(() => {
-        tempo++;
-        infoTempo.textContent = `Tempo: ${tempo}s`;
-    }, 1000);
-}
+    const infoTentativas = document.getElementById("tentativas");
+    const infoTempo = document.getElementById("tempo");
+    let tempo = 0;
+    let timer;
 
+    function iniciarTimer() {
+        timer = setInterval(() => {
+            tempo++;
+            infoTempo.textContent = `Tempo: ${tempo}s`;
+        },1000);
+} 
 function pararTimer() {
-    clearInterval(timer);
-}
+        clearInterval(timer);
+    }
 
-// Adicione esta linha no final da função virarCarta, após a verificação das cartas
-tentativas++;
-infoTentativas.textContent = `Tentativas: ${tentativas}`;
+    const message = document.getElementById("message");
 
-const message = document.getElementById("message");
+    function showMessage() {
+        message.style.display = "block";
+        setTimeout(() => {
+            message.style.display = "none";
+        }, 1000);
+    }
 
-function showMessage() {
-    message.style.display = "block";
-    setTimeout(() => {
-        message.style.display = "none";
-    }, 1000);
-}
+    const telaSelecao = document.getElementById("tela-selecao");
+    const btnNumeros = document.getElementById("btnNumeros");
+    const btnNome = document.getElementById("btnNome");
+    const btnVogais = document.getElementById("btnVogais");
+    const btnAlfabeto = document.getElementById("btnAlfabeto");
 
-const telaSelecao = document.getElementById("tela-selecao");
-const btnNumeros = document.getElementById("btnNumeros");
-const btnNome = document.getElementById("btnNome");
-const btnVogais = document.getElementById("btnVogais");
-const btnAlfabeto = document.getElementById("btnAlfabeto");
+    btnNumeros.addEventListener("click", () => {
+        telaSelecao.style.display = "none";
+        iniciarJogoComConteudo(conteudo.numeros.split(''));
+    });
+    btnNome.addEventListener("click", () => {
+        telaSelecao.style.display = "none";
+        iniciarJogoComConteudo(conteudo.nome.split(''));
+    });
+    btnVogais.addEventListener("click", () => {
+        telaSelecao.style.display = "none";
+        iniciarJogoComConteudo(conteudo.vogais.split(''));
+    });
+    btnAlfabeto.addEventListener("click", () => {
+        telaSelecao.style.display = "none";
+        iniciarJogoComConteudo(conteudo.alfabeto.split(''));
+    });
 
-btnNumeros.addEventListener("click", () => {
-    telaSelecao.style.display = "none";
-    // Defina o conteúdo das cartas para números aqui
-});
-btnNome.addEventListener("click", () => {
-    telaSelecao.style.display = "none";
-    // Defina o conteúdo das cartas para o nome "Leticia" aqui
-});
-btnVogais.addEventListener("click", () => {
-    telaSelecao.style.display = "none";
-    // Defina o conteúdo das cartas para vogais aqui
-});
-btnAlfabeto.addEventListener("click", () => {
-    telaSelecao.style.display = "none";
-    iniciarJogo();
-});
+    // Não é mais necessário chamar a função iniciarJogo aqui, pois o jogo só deve começar após a seleção de uma opção.
 
-function iniciarJogoComConteudo(novoConteudo) {
-            cartas = [...novoConteudo, ...novoConteudo];
-            iniciarJogo();
-        }
-
-        btnNumeros.addEventListener("click", () => {
-            telaSelecao.style.display = "none";
-            iniciarJogoComConteudo("1234567890".split(""));
-        });
-        btnNome.addEventListener("click", () => {
-            telaSelecao.style.display = "none";
-            iniciarJogoComConteudo("LETICIA".split(""));
-        });
-        btnVogais.addEventListener("click", () => {
-            telaSelecao.style.display = "none";
-            iniciarJogoComConteudo("AEIOU".split(""));
-        });
-        btnAlfabeto.addEventListener("click", () => {
-            telaSelecao.style.display = "none";
-            iniciarJogoComConteudo([...letras]);
-        });
-
-        // Remova esta linha, pois o jogo só deve começar após a seleção de uma opção.
-        // iniciarJogo();
-    </script>
+</script>
 </body>
 </html>
